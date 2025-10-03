@@ -1,0 +1,94 @@
+{
+  "namespace": "com.analytics.pipeline.alerts",
+  "type": "record",
+  "name": "CEAlert",
+  "fields": [
+    {
+      "name": "alertId",
+      "type": "string",
+      "doc": "Unique identifier for the alert"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Alert timestamp in milliseconds"
+    },
+    {
+      "name": "alertType",
+      "type": {
+        "type": "enum",
+        "name": "AlertType",
+        "symbols": [
+          "HIGH_BOUNCE_RATE",
+          "CONVERSION_FUNNEL_BREACH",
+          "TRAFFIC_ANOMALY",
+          "FRAUD_DETECTED",
+          "PERFORMANCE_DEGRADATION",
+          "CUSTOM_PATTERN"
+        ]
+      },
+      "doc": "Type of alert"
+    },
+    {
+      "name": "severity",
+      "type": {
+        "type": "enum",
+        "name": "Severity",
+        "symbols": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+      },
+      "doc": "Alert severity level"
+    },
+    {
+      "name": "title",
+      "type": "string",
+      "doc": "Alert title"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Alert description"
+    },
+    {
+      "name": "patternMatched",
+      "type": "string",
+      "doc": "CEP pattern that triggered the alert"
+    },
+    {
+      "name": "affectedUsers",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "List of affected user IDs"
+    },
+    {
+      "name": "metrics",
+      "type": {
+        "type": "map",
+        "values": "double"
+      },
+      "doc": "Relevant metrics at time of alert"
+    },
+    {
+      "name": "context",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "Additional context information"
+    },
+    {
+      "name": "recommendedAction",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Recommended action to take"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "doc": "Source system that generated the alert"
+    }
+  ]
+}

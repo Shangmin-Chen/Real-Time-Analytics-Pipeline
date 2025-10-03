@@ -1,0 +1,145 @@
+groups:
+  - name: analytics-pipeline
+    rules:
+      # High latency alerts
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(analytics_pipeline_latency_seconds_bucket[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: critical
+          service: analytics-pipeline
+        annotations:
+          summary: "High latency detected in analytics pipeline"
+          description: "95th percentile latency is {{ $value }}s, exceeding 500ms threshold"
+
+      # Low throughput alerts
+      - alert: LowThroughput
+        expr: rate(analytics_pipeline_events_total[5m]) < 8000
+        for: 5m
+        labels:
+          severity: warning
+          service: analytics-pipeline
+        annotations:
+          summary: "Low throughput in analytics pipeline"
+          description: "Event processing rate is {{ $value }} events/min, below 8K/min threshold"
+
+      # High error rate alerts
+      - alert: HighErrorRate
+        expr: rate(analytics_pipeline_errors_total[5m]) / rate(analytics_pipeline_events_total[5m]) > 0.01
+        for: 2m
+        labels:
+          severity: critical
+          service: analytics-pipeline
+        annotations:
+          summary: "High error rate in analytics pipeline"
+          description: "Error rate is {{ $value | humanizePercentage }}, exceeding 1% threshold"
+
+      # Kafka broker down
+      - alert: KafkaBrokerDown
+        expr: up{job="kafka"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: kafka
+        annotations:
+          summary: "Kafka broker is down"
+          description: "Kafka broker {{ $labels.instance }} is not responding"
+
+      # Flink job manager down
+      - alert: FlinkJobManagerDown
+        expr: up{job="flink"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: flink
+        annotations:
+          summary: "Flink JobManager is down"
+          description: "Flink JobManager is not responding"
+
+      # InfluxDB down
+      - alert: InfluxDBDown
+        expr: up{job="influxdb"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: influxdb
+        annotations:
+          summary: "InfluxDB is down"
+          description: "InfluxDB is not responding"
+
+      # WebSocket server down
+      - alert: WebSocketServerDown
+        expr: up{job="websocket-server"} == 0
+        for: 1m
+        labels:
+          severity: warning
+          service: websocket-server
+        annotations:
+          summary: "WebSocket server is down"
+          description: "WebSocket server is not responding"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }}, exceeding 90% threshold"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}%, exceeding 80% threshold"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Disk space is low"
+          description: "Disk space on {{ $labels.mountpoint }} is {{ $value | humanizePercentage }}, below 10% threshold"
+
+      # Kafka consumer lag
+      - alert: KafkaConsumerLag
+        expr: kafka_consumer_lag_sum > 10000
+        for: 2m
+        labels:
+          severity: warning
+          service: kafka
+        annotations:
+          summary: "High Kafka consumer lag"
+          description: "Consumer lag is {{ $value }} messages, exceeding 10K threshold"
+
+      # Flink checkpoint failures
+      - alert: FlinkCheckpointFailures
+        expr: flink_jobmanager_numFailedCheckpoints > 0
+        for: 1m
+        labels:
+          severity: critical
+          service: flink
+        annotations:
+          summary: "Flink checkpoint failures"
+          description: "{{ $value }} checkpoint failures detected"
+
+      # Event simulator stopped
+      - alert: EventSimulatorStopped
+        expr: up{job="event-simulator"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: event-simulator
+        annotations:
+          summary: "Event simulator stopped"
+          description: "Event simulator is not running"

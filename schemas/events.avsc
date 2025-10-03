@@ -1,0 +1,206 @@
+{
+  "namespace": "com.analytics.pipeline.events",
+  "type": "record",
+  "name": "AnalyticsEvent",
+  "fields": [
+    {
+      "name": "eventId",
+      "type": "string",
+      "doc": "Unique identifier for the event"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Event timestamp in milliseconds"
+    },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": ["PAGE_VIEW", "SESSION_START", "SESSION_END", "CONVERSION", "CUSTOM"]
+      },
+      "doc": "Type of analytics event"
+    },
+    {
+      "name": "userId",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "User identifier (null for anonymous users)"
+    },
+    {
+      "name": "sessionId",
+      "type": "string",
+      "doc": "Session identifier for tracking user sessions"
+    },
+    {
+      "name": "pageViewData",
+      "type": ["null", {
+        "type": "record",
+        "name": "PageViewData",
+        "fields": [
+          {
+            "name": "url",
+            "type": "string",
+            "doc": "Page URL"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "doc": "Page title"
+          },
+          {
+            "name": "referrer",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Referring page URL"
+          },
+          {
+            "name": "pageLoadTime",
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Page load time in milliseconds"
+          }
+        ]
+      }],
+      "default": null,
+      "doc": "Page view specific data"
+    },
+    {
+      "name": "sessionData",
+      "type": ["null", {
+        "type": "record",
+        "name": "SessionData",
+        "fields": [
+          {
+            "name": "userAgent",
+            "type": "string",
+            "doc": "User agent string"
+          },
+          {
+            "name": "ipAddress",
+            "type": "string",
+            "doc": "Client IP address"
+          },
+          {
+            "name": "country",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Country code"
+          },
+          {
+            "name": "city",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "City name"
+          },
+          {
+            "name": "deviceType",
+            "type": {
+              "type": "enum",
+              "name": "DeviceType",
+              "symbols": ["DESKTOP", "MOBILE", "TABLET", "UNKNOWN"]
+            },
+            "default": "UNKNOWN",
+            "doc": "Device type classification"
+          },
+          {
+            "name": "browser",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Browser name"
+          },
+          {
+            "name": "os",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Operating system"
+          }
+        ]
+      }],
+      "default": null,
+      "doc": "Session specific data"
+    },
+    {
+      "name": "conversionData",
+      "type": ["null", {
+        "type": "record",
+        "name": "ConversionData",
+        "fields": [
+          {
+            "name": "conversionType",
+            "type": {
+              "type": "enum",
+              "name": "ConversionType",
+              "symbols": ["PURCHASE", "SIGNUP", "DOWNLOAD", "CONTACT", "CUSTOM"]
+            },
+            "doc": "Type of conversion event"
+          },
+          {
+            "name": "value",
+            "type": ["null", "double"],
+            "default": null,
+            "doc": "Monetary value of conversion"
+          },
+          {
+            "name": "currency",
+            "type": ["null", "string"],
+            "default": "USD",
+            "doc": "Currency code"
+          },
+          {
+            "name": "productId",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Product identifier"
+          },
+          {
+            "name": "category",
+            "type": ["null", "string"],
+            "default": null,
+            "doc": "Product category"
+          }
+        ]
+      }],
+      "default": null,
+      "doc": "Conversion specific data"
+    },
+    {
+      "name": "customData",
+      "type": ["null", {
+        "type": "map",
+        "values": "string"
+      }],
+      "default": null,
+      "doc": "Custom event properties"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "record",
+        "name": "EventMetadata",
+        "fields": [
+          {
+            "name": "source",
+            "type": "string",
+            "doc": "Event source identifier"
+          },
+          {
+            "name": "version",
+            "type": "string",
+            "default": "1.0",
+            "doc": "Event schema version"
+          },
+          {
+            "name": "environment",
+            "type": "string",
+            "default": "production",
+            "doc": "Environment where event occurred"
+          }
+        ]
+      },
+      "doc": "Event metadata"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "namespace": "com.analytics.pipeline.metrics",
+  "type": "record",
+  "name": "ProcessedMetric",
+  "fields": [
+    {
+      "name": "metricId",
+      "type": "string",
+      "doc": "Unique identifier for the metric"
+    },
+    {
+      "name": "timestamp",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Metric timestamp in milliseconds"
+    },
+    {
+      "name": "windowStart",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Window start time"
+    },
+    {
+      "name": "windowEnd",
+      "type": "long",
+      "logicalType": "timestamp-millis",
+      "doc": "Window end time"
+    },
+    {
+      "name": "metricType",
+      "type": {
+        "type": "enum",
+        "name": "MetricType",
+        "symbols": [
+          "PAGE_VIEWS_PER_SECOND",
+          "ACTIVE_USERS",
+          "BOUNCE_RATE",
+          "AVERAGE_SESSION_DURATION",
+          "CONVERSION_RATE",
+          "REVENUE_PER_USER",
+          "TOP_PAGES",
+          "GEOGRAPHIC_DISTRIBUTION",
+          "DEVICE_BREAKDOWN",
+          "CUSTOM_METRIC"
+        ]
+      },
+      "doc": "Type of processed metric"
+    },
+    {
+      "name": "value",
+      "type": "double",
+      "doc": "Metric value"
+    },
+    {
+      "name": "count",
+      "type": ["null", "long"],
+      "default": null,
+      "doc": "Number of events contributing to this metric"
+    },
+    {
+      "name": "dimensions",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "doc": "Metric dimensions (e.g., page, country, device)"
+    },
+    {
+      "name": "tags",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Additional metric tags"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "doc": "Source of the metric calculation"
+    }
+  ]
+}
